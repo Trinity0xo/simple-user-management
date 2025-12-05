@@ -117,6 +117,13 @@ app.put("/users/:userId", (req, res) => {
 
   if (foundUsers.length == 0) {
     return res.status(404).json({
+      success: true,
+      message: "Not found",
+    });
+  }
+
+  if (foundUsers.length == 1 && foundUsers[0].id != userId) {
+    return res.status(404).json({
       success: false,
       message: "Not found",
     });
