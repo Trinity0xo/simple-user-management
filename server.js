@@ -111,23 +111,30 @@ app.put("/users/:userId", (req, res) => {
     });
   }
 
-  const updateUserIndex = users.filter(
+  const foundUsers = users.filter(
     (user) => user.id == userId || user.email == email
   );
 
-  if (updateUserIndex != -1) {
+  if (foundUsers.length == 0) {
+    return res.status(404).json({
+      success: false,
+      message: "Not found",
+    });
+  }
+
+  if (foundUsers.length > 1) {
     return res.status(409).json({
       success: false,
       message: "User with this email already exist",
     });
   }
 
-  users[updateUserIndex].name = name;
-  users[updateUserIndex].email = email;
+  foundUsers[0].name = name;
+  foundUsers[0].email = email;
 
   res.json({
     success: true,
-    data: users[updateUserIndex],
+    data: foundUsers[0],
   });
 });
 
