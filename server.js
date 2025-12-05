@@ -80,7 +80,11 @@ app.post("/users", (req, res) => {
     });
   }
 
-  const lastId = users[users.length - 1].id;
+  let lastId;
+
+  if (users.length > 0) {
+    lastId = users[users.length - 1].id;
+  }
 
   const newUser = {
     id: lastId ? lastId + 1 : 1,
@@ -107,20 +111,11 @@ app.put("/users/:userId", (req, res) => {
     });
   }
 
-  const updateUserIndex = users.findIndex((user) => user.id == userId);
-  if (updateUserIndex == -1) {
-    return res.status(404).json({
-      success: false,
-      message: "Not found",
-    });
-  }
+  const updateUserIndex = users.filter(
+    (user) => user.id == userId || user.email == email
+  );
 
-  const existUserIndex = users.findIndex((user) => user.email == email);
-
-  if (
-    existUserIndex != -1 &&
-    users[existUserIndex].id != users[updateUserIndex].id
-  ) {
+  if (updateUserIndex != -1) {
     return res.status(409).json({
       success: false,
       message: "User with this email already exist",
